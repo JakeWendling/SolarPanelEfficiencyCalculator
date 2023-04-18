@@ -104,6 +104,8 @@ def postData() -> dict:
             data = json.load(f)
             for day in data['days']:
                 day.pop('stations')
+                if day['preciptype']:
+                    day['preciptype'] = ', '.join(day['preciptype'])
                 print(day)
                 rd.hset(day['datetime'], mapping=day)
     return "Data loaded\n"
