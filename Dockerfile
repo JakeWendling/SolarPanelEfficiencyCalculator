@@ -6,6 +6,6 @@ RUN pip install Flask==2.2.2
 RUN pip install requests==2.22.0
 
 COPY solar_api.py /solar_api.py
-COPY data/Dallas.json /data/Dallas.json
+COPY data /data
 
 CMD ["python", "solar_api.py"]

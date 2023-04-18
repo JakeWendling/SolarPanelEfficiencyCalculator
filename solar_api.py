@@ -25,6 +25,10 @@ def get_redis_client(db=0, decode=True):
     rd = redis.Redis(host=redis_ip, port=6379, db=db, decode_responses=decode)
     return rd
 
+def getCities() -> dict:
+    cities = {'Dallas': 1, 'Austin': 2, 'Houston': 3, 'San_Antonio': 4}
+    return cities
+    
 @app.route('/image', methods=['DELETE'])
 def deleteImage() -> dict:
     """
@@ -96,7 +100,7 @@ def postData() -> dict:
         string: Message that tells the user that the data has successfuly been obtained
     """
     #response = requests.get('https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/json/hgnc_complete_set.json')
-    cities = ['Dallas', 'Austin', 'Houston', 'San_Antonio']
+    cities = getCities()
     for i in range(len(cities)):
         city = cities[i]
         with open(f'data/{city}.json', 'r') as f:
@@ -106,6 +110,8 @@ def postData() -> dict:
                 day.pop('stations')
                 if day['preciptype']:
                     day['preciptype'] = ', '.join(day['preciptype'])
+                else:
+                    day['preciptype'] = 'none'
                 print(day)
                 rd.hset(day['datetime'], mapping=day)
     return "Data loaded\n"
@@ -126,56 +132,74 @@ def deleteData() -> str:
 @app.route('/data', methods=['GET'])
 def getData() -> dict:
     """
-    Gets the HGNC data and returns the data in dictionary format
+    Gets the weather data and returns the data in dictionary format
 
     Returns:
         data: The stored data in dictionary format.
     """
-    rd = get_redis_client()
     data = []
-    for key in rd.hgetall('data'):
-        data.append(json.loads(rd.hget('data', key)))
+    cities = getCities()
+    for city in cities.keys():
+        rd = get_redis_client(cities[city])
+        for date in rd.hkeys():
+            data.append(rd.hgetall(date))
     #if data == "":
     #    return "Data not found\n", 400
     return data
 
-@app.route('/genes', methods=['GET'])
-def getGenes() -> List[str]:
+@app.route('weather/<city>/date', methods=['GET'])
+def getDates(city: str) -> List[str]:
     """
-    Gets the HGNC data and returns the list of genes in a list
+    Gets the weather data and returns the list of dates in a list
     
     Returns:
-        idList: a list of id's of genes(strings) for which gene data is available.
+        dateList: a list of dates (strings) for which weather data is available.
     """
     #if not data:
     #    return "Data not found\n", 400
-    #geneList = data['response']['docs']
-    rd = get_redis_client()
-    return rd.hkeys('data')
+    cities = getCities()
+    rd = get_redis_client(city)
+    return rd.keys()
 
-@app.route('/genes/<hgnc_id>', methods=['GET'])
-def getGene(hgnc_id: str) -> dict:
+@app.route('weather/cities', methods=['GET'])
+def getCities() -> List[str]:
     """
-    Gets the HGNC data, 
-    then returns the gene data for a given HGNC ID, if available. 
+    Gets the weather data and returns the list of cities
+    
+    Returns:
+        dateList: a list of cities (strings) for which weather data is available.
+    """
+    #if not data:
+    #    return "Data not found\n", 400
+    cities = getCities()
+    return cities.keys()
+
+@app.route('weather/<city>/date/<date>', methods=['GET'])
+def getWeatherData(city: str, date: str) -> dict:
+    """
+    Gets the weather data, 
+    then returns the weather data for a given date/city, if available. 
     Otherwise returns an error message and error code.
     
     Args:
-        hgnc_id: A string representing a gene's HGNC ID.
+        date: A string representing a date.
+        city: string representing a city.
         
     Returns:
-        geneData: Dictionary containing data about the given gene, if available. 
+        weatherData: Dictionary containing data from the given date, if available. 
     
     Raises:
-        If no gene data is available for the given gene id, 
+        If no weather data is available for the given date/city, 
         returns an error message and a 400 status code.
     """
-    rd = get_redis_client()
-    for key in rd.hkeys('data'):
-        gene = json.loads(rd.hget('data', key))
-        if gene['hgnc_id'] == hgnc_id:
-            return gene
-    return "Error: Gene not found\n", 400
+    cities = getCities()
+    rd = get_redis_client(cities[city])
+    try:
+        weatherData = rd.hgetall(date)
+    except Exception as e:
+        #return "Error: Data not found, please enter a different date. Available dates can be found in weather/dates \n", 400
+        return e
+    return weatherData
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
