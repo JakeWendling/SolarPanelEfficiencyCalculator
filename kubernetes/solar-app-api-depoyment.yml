@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-app-api-depoyment
+  labels:
+    username: braulio1
+    env: test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: solar-app-api
+  template:
+    metadata:
+      labels:
+        app: solar-app-api
+        username: braulio1
+        env: test
+    spec:
+      containers:
+        - name: flask
+          imagePullPolicy: Always
+          image: jakewendling/solar_app:0.1
+          env: 
+            - name: REDIS_IP
+              value: redis-db 
+          ports:
+            - containerPort: 5000
