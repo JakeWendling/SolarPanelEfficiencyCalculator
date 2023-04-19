@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-app-wrk-deployment
+  labels:
+    username: braulio1
+    env: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solar-app-wrk
+  template:
+    metadata:
+      labels:
+        app: solar-app-wrk
+    spec:
+      containers:
+        - name: worker
+          imagePullPolicy: Always
+          image: jakewendling/solar_app:0.1
+          env:
+            - name: REDIS_IP
+              value: redis-db
+          volumeMounts:
+            - name: worker-data
+              mountPath: /data
+      volumes:
+        - name: worker-data
+          persistentVolumeClaim:
+            claimName: solar-app-wrk-pvc
+
