@@ -12,6 +12,5 @@ The data used in this project is located in the folder called "Data" where it co
 To set up this project, follow these steps: clone the repository and make a new directory to hold the data.
 
 ```
-  git clone https://github.com/JakeWendling/COE332.git
-cd COE332
-cd homework08
+  git clone git@github.com:JakeWendling/SolarPanelEfficiencyCalculator.git
+
