@@ -51,7 +51,7 @@ Two Kubernetes services are initiated; one for the Flask application and another
 #Running flask_api.py
 
 | Routes| Method| Description|
-|---------------------------|
+|-------| -------  |-----------|
 |/image | GET, POST, DELETE| Creates a plot of the locus groups of the gene data and stores the image in redis|
 
 
