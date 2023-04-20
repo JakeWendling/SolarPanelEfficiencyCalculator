@@ -14,6 +14,5 @@ To set up this project, follow these steps: clone the repository and make a new 
 
 ```
   git clone git@github.com:JakeWendling/SolarPanelEfficiencyCalculator.git
-  
 ```
 ## Docker
