@@ -11,6 +11,10 @@ The data used in this project is located in the folder called "Data" where it co
 ## Installation
 To set up this project, follow these steps: clone the repository and make a new directory to hold the data.
 
+```python
+def hello_world():
+    print("Hello, world!")
+
 
 
 
