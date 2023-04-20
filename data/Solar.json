@@ -1,0 +1,41 @@
+{
+    "PERC": {
+	"Efficiency": 0.25,
+	"Size": "Smallest",
+	"Cost": "Highest",
+	"T Coeff": -0.360
+    },
+    "Monocrystalline": {
+	"Efficiency": 0.2,
+	"Size": "Average",
+	"Cost": "High",
+	"T Coeff": -0.370
+    },
+    "Polycrytalline": {
+	"Efficiency": 0.16,
+	"Size": "Average",
+	"Cost": "Medium",
+	"T Coeff": -0.400
+    },
+    "CIGS": {
+	"Efficiency": 0.14,
+	"Size": "Average, thin-film",
+	"Cost": "Low",
+	"T Coeff": -0.280
+    },
+    "CdTe": {
+	"Efficiency": 0.10,
+	"Size": "Average, thin-film",
+	"Cost": "Lower",
+	"T Coeff": -0.330
+    },
+    "a-Si": {
+	"Efficiency": 0.07,
+	"Size": "Average, thin-film",
+	"Cost": "Lowest",
+	"T Coeff": -0.200
+    }
+}
+	
+    
+    
