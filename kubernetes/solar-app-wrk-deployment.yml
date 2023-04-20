@@ -4,7 +4,6 @@ kind: Deployment
 metadata:
   name: solar-app-wrk-deployment
   labels:
-    username: braulio1
     env: test
 spec:
   replicas: 1

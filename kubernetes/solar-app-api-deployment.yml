@@ -4,7 +4,6 @@ kind: Deployment
 metadata:
   name: solar-app-api-depoyment
   labels:
-    username: braulio1
     env: test
 spec:
   replicas: 2

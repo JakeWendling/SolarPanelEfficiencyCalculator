@@ -4,7 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: solar-app-db-pvc
   labels:
-    username: braulio1
     env: test
 spec:
   accessModes:

@@ -4,7 +4,6 @@ kind: Service
 metadata:
   name: solar-app-db-service
   labels:
-    username: braulio1
     env: test
 spec:
   type: ClusterIP
