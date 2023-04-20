@@ -60,9 +60,9 @@ Two Kubernetes services are initiated; one for the Flask application and another
 |       |  DELETE |  Deletes the data stored in the redis db returns a success message |
 | /cities |  GET |  Gets the weather data and returns the list of cities |
 | /weather/cities  |  GET |  Returns a dateList a list of cities (strings) for which weather data is available |
-|   /weather/cities/<city> |  GET |  Gets the weather data and returns the data for a given city |
-|  /weather/cities/<city>/dates  |  GET |  Gets the weather data and returns the list of dates in a list |
-|   /weather/cities/<city>/dates/<date>    |  GET |   Gets the weather data, then returns the weather data for a given date/city, if available. Otherwise returns an error message and error code. |
+| /weather/cities/ <city>  |  GET |  Gets the weather data and returns the data for a given city |
+| /weather/cities/ <city> /dates  |  GET |  Gets the weather data and returns the list of dates in a list |
+| /weather/cities/<city>/dates/<date>    |  GET |   Gets the weather data, then returns the weather data for a given date/city, if available. Otherwise returns an error message and error code. |
 
 
 
