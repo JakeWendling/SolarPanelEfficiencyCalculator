@@ -1,4 +1,4 @@
-### Solar Panel Efficiency Calculator 
+# Solar Panel Efficiency Calculator 
  
  
 This Project is a Flask Application used for querying, storing, and returning information from the Solar radiation Database. 
@@ -20,8 +20,16 @@ To set up this project, follow these steps: clone the repository and make a new 
 ## Building an Image 
 In order to customize the code to suit your requirements, creating a personal image is an option that you can explore. It's necessary to create an account on Docker Hub and then proceed to upload your Docker Image to it. This can be accomplished by following the steps outlined below:
  
- 1. You will need to access all the files from the Kurbenetes folder 
- 2. Create a docker image 
+ 1. You will need to access all the files from the Kurbenetes folder and change the username to your Dockerhub account name
+ 2. Create the docker image 
  ```
   docker build . -t <docker_hub_username>/solar_app:01
  ```
+ 3. As you created the new image you will have to go into the Kurbenetes folder and change the "..api-deployment.yml" image to you new image <docker_hub_username>/solar_app:01
+ 4. Also repeat this step but in the solar-app-wrk-deployment.yml file 
+ 5. Noe that the image is created is important to push it 
+ ```
+  docker push
+ ```
+ 
+ # 
