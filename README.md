@@ -7,7 +7,7 @@ In this repository you are going to find 3 directories: src, data, and kurbenete
 you are also going to have a Dockerfile and a docker-compose.yaml used for containerization.
 
 ## Data
-The data used in this project is located in the folder called "Data" where it contains five json files, 4 files are data from 4 different cities in texas Austin, Dallas, Houston and San Antonio. In this folder you are also going to get Solar json file where all the solar data will be located and a dumb rdb file.
+The data used in this project is located in the folder called "Data" where it contains five json files, 4 files are data from 4 different cities in texas Austin, Dallas, Houston and San Antonio. In this folder you are also going to get Solar json file where all the solar data will be located and a dumb rdb file. The data used in this program can be found at [this link](https://www.visualcrossing.com/weather-data) you just have to type the name of the cities you want to locate in our case was the cities mentioned above 
 
 ## Installation
 To set up this project, follow these steps: clone the repository and make a new directory to hold the data.
