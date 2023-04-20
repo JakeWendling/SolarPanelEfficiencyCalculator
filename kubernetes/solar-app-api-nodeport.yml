@@ -1,0 +1,12 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: solar-app-api-nodeport
+spec:
+    type: NodePort
+    selector:
+        app: solar-app-api
+    ports:
+        - port: 5000
+          targetPort: 5000
