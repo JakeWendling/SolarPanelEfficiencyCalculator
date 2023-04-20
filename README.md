@@ -16,3 +16,12 @@ To set up this project, follow these steps: clone the repository and make a new 
   git clone git@github.com:JakeWendling/SolarPanelEfficiencyCalculator.git
 ```
 ## Docker Container 
+
+# Building an Image 
+In order to customize the code to suit your requirements, creating a personal image is an option that you can explore. It's necessary to create an account on Docker Hub and then proceed to upload your Docker Image to it. This can be accomplished by following the steps outlined below:
+ 
+ 1. You will need to access all the files from the Kurbenetes folder 
+ 2. Create a docker image 
+ ```
+  docker build . -t <docker_hub_username>/solar_app:01
+ ```
