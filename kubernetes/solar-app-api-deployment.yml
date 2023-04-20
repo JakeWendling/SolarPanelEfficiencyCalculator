@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: solar-app-api-depoyment
+  name: solar-app-api-deployment
   labels:
     env: test
 spec:
@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: solar-app-api
-        username: braulio1
         env: test
     spec:
       containers:
@@ -23,6 +22,6 @@ spec:
           image: jakewendling/solar_app:0.1
           env: 
             - name: REDIS_IP
-              value: redis-db 
+              value: solar-app-db-service 
           ports:
             - containerPort: 5000

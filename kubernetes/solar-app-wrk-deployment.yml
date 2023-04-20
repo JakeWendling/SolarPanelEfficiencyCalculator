@@ -18,15 +18,15 @@ spec:
       containers:
         - name: worker
           imagePullPolicy: Always
-          image: jakewendling/solar_app:0.1
+          image: jakewendling/solar_worker:0.1
           env:
             - name: REDIS_IP
-              value: redis-db
+              value: solar-app-db-service
           volumeMounts:
             - name: worker-data
               mountPath: /data
       volumes:
         - name: worker-data
           persistentVolumeClaim:
-            claimName: solar-app-wrk-pvc
+            claimName: solar-app-db-pvc
 
