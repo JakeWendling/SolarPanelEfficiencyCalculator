@@ -23,13 +23,28 @@ In order to customize the code to suit your requirements, creating a personal im
  1. You will need to access all the files from the Kurbenetes folder and change the username to your Dockerhub account name
  2. Create the docker image 
  ```
-  docker build . -t <docker_hub_username>/solar_app:01
+   docker build . -t <docker_hub_username>/solar_app:01
  ```
  3. As you created the new image you will have to go into the Kurbenetes folder and change the "..api-deployment.yml" image to you new image <docker_hub_username>/solar_app:01
  4. Also repeat this step but in the solar-app-wrk-deployment.yml file 
  5. Noe that the image is created is important to push it 
  ```
-  docker push
+    docker push
  ```
  
- # 
+ ## Kurbenetes
+ also known as "K8s" is an open-source container orchestration system that automates the deployment, scaling, and management of containerized applications.
+
+ ```
+  kubectl apply -f solar-app-api-deployment.yml
+  kubectl apply -f solar-app-api-ingress.yml
+  kubectl apply -f solar-app-api-nodeport.yml
+  kubectl apply -f solar-app-db-deployment.yml
+  kubectl apply -f solar-app-db-pvc.yml
+  kubectl apply -f solar-app-db-service.yml
+  kubectl apply -f solar-app-wrk-deployment.yml
+ ```
+Two Kubernetes services are initiated; one for the Flask application and another for the Redis database. During the maiden run, the data download process might take a while to complete. You then will see an output confirming this services were configured 
+
+
+
