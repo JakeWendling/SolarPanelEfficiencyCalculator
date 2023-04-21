@@ -1,4 +1,4 @@
 *~
 push
 __pycache__
-dump.rdb
+data/dump.rdb
