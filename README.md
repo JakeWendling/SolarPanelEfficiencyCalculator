@@ -104,3 +104,27 @@ By curling into the cities route you should get:
 
 ```
 
+## /weather/cities
+To access a list of cities (strings) for which weather data is available:
+```
+  curl localhost:5000/weather/cities
+```
+The resultant output should look as:
+```
+  !!! DISPLAY /weather/cities!!! 
+
+```
+
+## /weather/cities/&lt;city&gt
+If you are only interested in finding the data fromm a specific city you can curl:
+```
+  curl localhost:5000/weather/cities/&lt;city&gt
+```
+This should give you something like:
+```
+  !!! DISPLAY weather/cities/&lt;city&gt !!!
+  
+```
+
+## /weather/cities/&lt;city&gt;/dates
+
