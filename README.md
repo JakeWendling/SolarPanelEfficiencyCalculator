@@ -168,3 +168,7 @@ To get the image of a plot as bytes:
   curl localhost:5000/image 
 ```
 
+It is important to know that you can download the image into the python pod:
+```
+  curl localhost:5000/image --output plot.png
+```
