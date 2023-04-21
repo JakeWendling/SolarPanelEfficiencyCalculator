@@ -311,8 +311,35 @@ def checkCategories(category: str):
     weatherData = rd.hgetall(date)
     return category not in weatherData.keys()
 
-@app.route('/weather/cities/<city>/categories/<category>', methods=['GET'])
+@app.route('/solar', methods=['GET'])
+def getSolarData():
+    rd = get_redis_client(0)
+    solarData = {}
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
+    for panelType in rd.keys():
+        solarData[panelType] = rd.hgetall(panelType)
+    return solarData
 
+@app.route('/solar/categories', methods=['GET'])
+def getSolarCategories():
+    rd = get_redis_client(0)
+    solarCategories = []
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
+    panelType = list(rd.keys())[0]
+    solarCategories = list(rd.hgetall(panelType).keys())
+    return solarCategories
+
+@app.route('/solar/categories/<category>', methods=['GET'])
+def getSolarCategoryData(category: str) -> List[str]:
+    rd = get_redis_client(0)
+    solarCategories = {}
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
+    for panelType in rd.keys():
+        solarCategories[panelType] = rd.hget(panelType, category)
+    return solarCategories
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
