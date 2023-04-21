@@ -1,9 +1,15 @@
 import uuid
 from hotqueue import HotQueue
 from redis import Redis
+import os
 
-q = HotQueue("queue", host='172.17.0.1', port=6379, db=1)
-rd = redis.Redis(host='172.17.0.1', port=6379, db=0)
+# read the ip address from the variable REDIS_IP, and provide a default value in case it is not
+# set
+redis_ip = os.environ.get('REDIS_IP', '172.17.0.1')
+# create the q and rd objects using the variable
+q = HotQueue("queue", host=redis_ip, port=6379, db=1)
+rd = redis.Redis(host=redis_ip, port=6379, db=0)
+
 
 
 def generate_jid():
