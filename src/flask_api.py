@@ -8,7 +8,17 @@ import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
-def get_redis_client(db=0, decode=True):
+def checkData():
+    """
+    Checks if the data is loaded
+
+    Returns:
+        bool: returns true if the data is loaded, false if it is not loaded
+    """
+    rd = get_redis_client()
+    return len(rd.keys()) > 0 
+
+def get_redis_client(db: int=0, decode: bool=True):
     """
     Gives the redis db object
     
@@ -99,10 +109,9 @@ def postData() -> dict:
     Returns:
         string: Message that tells the user that the data has successfuly been obtained
     """
-    #response = requests.get('https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/json/hgnc_complete_set.json')
     cities = getCities()
     for i in range(len(cities)):
-        city = cities[i]
+        city = list(cities.keys())[i]
         with open(f'data/{city}.json', 'r') as f:
             rd = get_redis_client(i+1)
             data = json.load(f)
@@ -112,8 +121,12 @@ def postData() -> dict:
                     day['preciptype'] = ', '.join(day['preciptype'])
                 else:
                     day['preciptype'] = 'none'
-                print(day)
                 rd.hset(day['datetime'], mapping=day)
+    with open(f'data/Solar.json','r') as f:
+        rd = get_redis_client(0)
+        solarData = json.load(f)
+        for panelType in solarData.keys():
+            rd.hset(panelType, mapping=solarData[panelType]) 
     return "Data loaded\n"
 
 @app.route('/data', methods=['DELETE'])
@@ -124,7 +137,6 @@ def deleteData() -> str:
     Returns:
         string: success message
     """
-    
     rd = get_redis_client()
     rd.flushall()
     return "Data deleted\n"
@@ -132,19 +144,22 @@ def deleteData() -> str:
 @app.route('/data', methods=['GET'])
 def getData() -> dict:
     """
-    Gets the weather data and returns the data in dictionary format
+    Gets the weather/solar data and returns the data in dictionary format
 
     Returns:
         data: The stored data in dictionary format.
     """
     data = []
+    rd_solar = get_redis_client(0)
+    for panelType in rd_solar.keys():
+        data.append(rd_solar.hgetall(panelType))
     cities = getCities()
     for city in cities.keys():
         rd = get_redis_client(cities[city])
         for date in rd.keys():
             data.append(rd.hgetall(date))
-    #if data == "":
-    #    return "Data not found\n", 400
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
     return data
 
 @app.route('/cities', methods=['GET'])
@@ -156,8 +171,8 @@ def getAllCities() -> List[str]:
     Returns:
         dateList: a list of cities (strings) for which weather data is available.
     """
-    #if not data:
-    #    return "Data not found\n", 400
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
     cities = getCities()
     return ',\n'.join(cities.keys())+'\n'
 
@@ -169,10 +184,16 @@ def getCityWeatherData(city: str) -> List[dict]:
     Returns:
         weatherData: a list of weather data (dictionaries)
     """
-    #if not data:
-    #    return "Data not found\n", 400
-    rd = get_redis_client(city)
-    return rd.getall()
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
+    cities = getCities()
+    if city not in cities:
+        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
+    rd = get_redis_client(cities[city])
+    weatherData = []
+    for date in rd.keys():
+        weatherData.append(rd.hgetall(date))
+    return weatherData
 
 @app.route('/weather/cities/<city>/dates', methods=['GET'])
 def getDates(city: str) -> List[str]:
@@ -182,11 +203,15 @@ def getDates(city: str) -> List[str]:
     Returns:
         dateList: a list of dates (strings) for which weather data is available.
     """
-    #if not data:
-    #    return "Data not found\n", 400
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
     cities = getCities()
-    rd = get_redis_client(city)
-    return rd.keys()
+    if city not in cities:
+        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
+    rd = get_redis_client(cities[city])
+    dates = rd.keys()
+    dates.sort()
+    return dates
 
 @app.route('/weather/cities/<city>/dates/<date>', methods=['GET'])
 def getWeatherData(city: str, date: str) -> dict:
@@ -206,21 +231,23 @@ def getWeatherData(city: str, date: str) -> dict:
         If no weather data is available for the given date/city, 
         returns an error message and a 400 status code.
     """
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
     cities = getCities()
+    if city not in cities:
+        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
     rd = get_redis_client(cities[city])
-    try:
-        weatherData = rd.hgetall(date)
-    except Exception as e:
-        return e
-    if weatherData == []:
-        return "Error: Data not found, please enter a different date. Available dates can be found in weather/cities/<city>/dates \n", 400
+    weatherData = rd.hgetall(date)
+    if weatherData == {}:
+        return "Error: Date not found. Available dates can be found in /weather/cities/<city>/dates \n", 400
     return weatherData
 
-@app.route('/weather/cities/<city>/dates/<date>', methods=['GET'])
-def getSpecificWeatherData(city: str, date: str, category: str) -> dict:
+@app.route('/weather/categories', methods=['GET'])
+#@app.route('/weather/cities/<city>/dates/<date>/categories', methods=['GET'])
+def getCategories(city: str='Dallas', date: str='2023-01-01') -> dict:
     """
     Gets the weather data, 
-    then returns the weather data of a given type for a given date/city, if available. 
+    then returns the categories for weather data of a given date/city, if available. 
     Otherwise returns an error message and error code.
     
     Args:
@@ -235,19 +262,58 @@ def getSpecificWeatherData(city: str, date: str, category: str) -> dict:
         If no weather data is available for the given date/city, 
         returns an error message and a 400 status code.
     """
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
     cities = getCities()
+    if city not in cities:
+        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
     rd = get_redis_client(cities[city])
-    try:
-        weatherData = rd.hgetall(date)
-    except Exception as e:
-        #return "Error: Data not found, please enter a different date. Available dates can be found in weather/dates \n", 400
-        return e
+    weatherData = rd.hgetall(date)
+    if weatherData == {}:
+        return "Error: Data not found. Available dates can be found in /weather/cities/<city>/dates \n", 400
+    return list(weatherData.keys())
+
+@app.route('/weather/cities/<city>/categories/<category>', methods=['GET'])
+def getSpecificWeatherData(city: str, category: str) -> dict:
+    """
+    Gets the weather data, 
+    then returns the weather data of a given category for a given city, if available. 
+    Otherwise returns an error message and error code.
+    
+    Args:
+        city: string representing a city.
+        category: string representing category of data to return.
+        
+    Returns:
+        weatherData: Dictionary containing data from the given date, if available. 
+    
+    Raises:
+        If no weather data is available for the given date/city, 
+        returns an error message and a 400 status code.
+    """
+    if not checkData():
+        return "Error: Data not found. Please load the data.\n", 400
+    cities = getCities()
+    if city not in cities:
+        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
+    if checkCategories(category):
+        return "Error: Category not found. Available categories can be found at /weather/categories.\n", 400
+    rd = get_redis_client(cities[city])
+    weatherData = {}
+    dates = rd.keys()
+    for date in dates:
+        weatherData[date] = rd.hget(date, category)
     return weatherData
+
+def checkCategories(category: str):
+    rd = get_redis_client(1)
+    date = '2023-01-01'
+    weatherData = rd.hgetall(date)
+    return category not in weatherData.keys()
+
+@app.route('/weather/cities/<city>/categories/<category>', methods=['GET'])
 
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
     rd = get_redis_client()
-    if rd.keys() == []:
-        postData()
-    

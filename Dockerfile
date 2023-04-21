@@ -5,7 +5,7 @@ RUN pip install redis==4.5.1
 RUN pip install Flask==2.2.2
 RUN pip install requests==2.22.0
 
-COPY solar_api.py /solar_api.py
+COPY src/flask_api.py src/flask_api.py
 COPY data /data
 
-CMD ["python", "solar_api.py"]
+CMD ["python", "src/flask_api.py"]
