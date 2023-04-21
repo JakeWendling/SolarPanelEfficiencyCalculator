@@ -67,9 +67,9 @@ Two Kubernetes services are initiated; one for the Flask application and another
 
 
 
-## commands 
+## Commands 
 
-/data
+## /data
 To load the data into the app, run the following:
 ```
   curl -X POST localhost:5000/data
@@ -86,8 +86,21 @@ To request the entire dataset:
 ```
 This method will display something as follows: 
 ```
+
+!!DISPLAY DATA ROUTE 
+SOMETHING HERE !!
+
+
 ```
 
+## /cities
+To get the list of cities:
+```
+  curl localhost:5000/cities 
+```
+By curling into the cities route you should get:
+```
+  !!DISPLAY CITIES ROUTE!!
 
-
+```
 
