@@ -68,17 +68,26 @@ Two Kubernetes services are initiated; one for the Flask application and another
 
 
 ## commands 
+
+/data
 To load the data into the app, run the following:
 ```
-    curl -X POST :5000/data
+  curl -X POST localhost:5000/data
 ```
 
 To delete the data from the app, run the following:
 ```
+  curl -X DELETE localhost:5000/data
 ```
 
 To request the entire dataset:
 ```
+ curl localhost:5000/data
 ```
+This method will display something as follows: 
+```
+```
+
+
 
 
