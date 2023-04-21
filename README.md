@@ -53,7 +53,7 @@ Two Kubernetes services are initiated; one for the Flask application and another
 
 | Routes                               | Method | Description                                                                                                          |
 |-------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------|
-| /image                              | POST   | Creates a plot of the locus groups of the gene data and stores the image in redis                                     |
+| /image                              | POST   | Creates a plot of the data and stores the image in redis                                     |
 |                                     | GET    | Returns an image of a plot image as bytes                                                                             |
 |                                     | DELETE | Deletes the image stored in the redis db returns a successful string                                                  |
 | /data                               | POST   | Gets the weather/solar panel data and saves the data in dictionary format in the flask app. Returns a String          |
@@ -127,4 +127,44 @@ This should give you something like:
 ```
 
 ## /weather/cities/&lt;city&gt;/dates
+To Get the weather data see the list of dates in a list
+    
+```
+ curl localhost:5000/weather/cities/&lt;city&gt;/dates
+
+```
+your output may look as:
+
+```
+!!DISPLAY /weather/cities/&lt;city&gt;/dates !!
+```
+
+
+## /weather/cities/&lt;city&gt;/dates/&lt;date&gt;
+This route gets the data from a specific date from the list provided:
+```
+  curl localhost:5000/weather/cities/&lt;city&gt;/dates/&lt;date&gt;
+```
+Your output mayl ook as:
+```
+!!!DISPLAY /weather/cities/&lt;city&gt;/dates/&lt;date&gt; !!
+
+
+```
+
+## /image 
+To create a plot of the of the data:
+```
+  curl -X POST localhost:5000/image
+```
+
+To delete the image from the data base:
+```
+  curl -X DELETE localhost:5000/image
+```
+
+To get the image of a plot as bytes:
+```
+  curl localhost:5000/image 
+```
 
