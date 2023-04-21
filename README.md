@@ -115,14 +115,14 @@ The resultant output should look as:
 
 ```
 
-## /weather/cities/&lt;city&gt
+## /weather/cities/&lt;city&gt;
 If you are only interested in finding the data fromm a specific city you can curl:
 ```
-  curl localhost:5000/weather/cities/&lt;city&gt
+  curl localhost:5000/weather/cities/&lt;city&gt;
 ```
 This should give you something like:
 ```
-  !!! DISPLAY weather/cities/&lt;city&gt !!!
+  !!! DISPLAY weather/cities/&lt;city&gt; !!!
   
 ```
 
