@@ -13,9 +13,18 @@ services:
       - REDIS_IP=redis-db
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./docker/Dockerfile.api
     depends_on:
       - redis-db
     image: jakewendling/solar_app:0.1
     ports:
       - 5000:5000
+  worker:
+    environment:
+      - REDIS_IP=redis-db
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.wrk
+    depends_on:
+      - redis-db
+    image: jakewendling/solar_worker:0.1

@@ -5,6 +5,7 @@ from typing import List
 from flask import Flask, request, send_file
 import os
 import matplotlib.pyplot as plt
+import jobs
 
 app = Flask(__name__)
 
@@ -296,7 +297,7 @@ def getSpecificWeatherData(city: str, category: str) -> dict:
     cities = getCities()
     if city not in cities:
         return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
-    if checkCategories(category):
+    if not checkCategories(category):
         return "Error: Category not found. Available categories can be found at /weather/categories.\n", 400
     rd = get_redis_client(cities[city])
     weatherData = {}
@@ -337,10 +338,38 @@ def getSolarCategoryData(category: str) -> List[str]:
     solarCategories = {}
     if not checkData():
         return "Error: Data not found. Please load the data.\n", 400
+    if not checkSolarCategories(category):
+        return "Error: Category not found. Available categories can be found at /solar/categories.\n", 400
     for panelType in rd.keys():
         solarCategories[panelType] = rd.hget(panelType, category)
     return solarCategories
 
+def checkSolarCategories(category: str):
+    rd = get_redis_client(0)
+    panelType = list(rd.keys())[0]
+    solarCategories = rd.hgetall(panelType).keys()
+    return category in solarCategories
+
+@app.route('/jobs', methods=['POST'])
+def postJobs():
+    """
+    API route for creating a new job to do some analysis. This route accepts a JSON payload
+    describing the job to be created.
+    """
+    try:
+        job = request.get_json(force=True)
+    except Exception as e:
+        return True, json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
+    return json.dumps(jobs.add_job(job['type'], job['param'], job['start'], job['end']))
+
+@app.route('/jobs', methods=['GET'])
+def getJobs():
+    """
+    API route for getting a list of current jobs.
+    """
+    rd = get_redis_client(7)
+    return list(rd.keys())
+    
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
     rd = get_redis_client()
