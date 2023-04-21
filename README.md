@@ -64,7 +64,8 @@ Two Kubernetes services are initiated; one for the Flask application and another
 | /weather/cities/&lt;city&gt;              | GET    | Gets the weather data and returns the data for a given city                                                            |
 | /weather/cities/&lt;city&gt;/dates        | GET    | Gets the weather data and returns the list of dates in a list                                                          |
 | /weather/cities/&lt;city&gt;/dates/&lt;date&gt; | GET    | Gets the weather data, then returns the weather data for a given date/city, if available. Otherwise returns an error message and error code. |
-
+| /weather/categories | GET | Gets the weather data, then returns the categories for weather data of a given date/city, if available. |
+|/weather/cities/&lt;city&gt;/categories/&lt;category&gt;| GET |Gets the weather data, then returns the weather data of a given category for a given city, if available. |
 
 
 ## Commands 
