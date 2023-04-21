@@ -67,6 +67,8 @@ Two Kubernetes services are initiated; one for the Flask application and another
 | /weather/categories | GET | Gets the weather data, then returns the categories for weather data of a given date/city, if available. |
 |/weather/cities/&lt;city&gt;/categories/&lt;category&gt;| GET |Gets the weather data, then returns the weather data of a given category for a given city, if available. |
 | /solar | GET | Gets the solar data from the data base|
+| /solar/categories | GET | Gets the list od categories in the solar data base|
+| /solar/categories/&lt;category&gt;| GET | Gets the specific category of a given category in the solar data base|
 ## Commands 
 
 ## /data
@@ -172,3 +174,36 @@ It is important to know that you can download the image into the python pod:
 ```
   curl localhost:5000/image --output plot.png
 ```
+
+## solar/
+To access the solar route:
+```
+  curl localhost:5000/solar
+```
+expected output should look like:
+```
+     DISPLAY HERE
+     DISPLAY HERE
+```
+
+
+## /solar/categories
+To access the list of categories in the 
+```
+  curl localhost:5000/solar/categories
+```
+expected output should look like:
+```
+  DISPLAY HERE
+  DISPLAY HERE
+```
+## /solar/categories/&lt;category&gt;
+```
+  curl localhost:5000/solar/categories/&lt;category&gt;
+```
+expected output should look like:
+```
+  DISPLAY HERE
+  DISPLAY HERE
+```
+
