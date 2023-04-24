@@ -15,24 +15,31 @@ def execute_job(jid):
     jobs.update_job_status(jid, 'in progress')
     jobType = jobs.get_job_type(jid)
     jobParam = jobs.get_job_param(jid)
-    if jobType == 'efficiency':
-        efficiencyCalculator(jid, jobParam)
-    elif jobType == 'graph':
-        graph(jid, jobParam)
+    if jobType == 'graphEfficiency':
+        graphEfficiency(jid, jobParam)
+    elif jobType == 'graphWeather':
+        graphWeather(jid, jobParam)
     else:
         jobs.update_job_status(jid, 'Error: job type does not exist')
        
-def efficiencyCalculator(jid: str, city: str):
+def graphEfficiency(jid: str, city: str):
     efficiencies = {}
     rd_solar = jobs.get_redis_client(0)
     if rd_solar.keys == []:
         jobs.update_job_status(jid, 'Error, data has not been loaded into the database')
         return 0
     cities = getCities()
+    time_values = {}
+    y_values = {}
     for panelType in rd_solar.keys():
         rd_weather = jobs.get_redis_client(cities[city])
+        start_time = int(rd_weather.hget('2023-01-01', 'datetimeEpoch'))
         solarPower = 0
-        for date in rd_weather.keys():
+        time_values[panelType] = []
+        y_values[panelType] = []
+        dates = list(rd_weather.keys())
+        dates.sort()
+        for date in dates:
             efficiency = float(rd_solar.hget(panelType, "Efficiency"))
             t_coeff = float(rd_solar.hget(panelType, "T_Coeff"))
             weatherData = rd_weather.hgetall(date)
@@ -40,13 +47,33 @@ def efficiencyCalculator(jid: str, city: str):
             sunsetEpoch = int(weatherData["sunsetEpoch"])
             sunriseEpoch = int(weatherData["sunriseEpoch"])
             cloudCover = float(weatherData["cloudcover"])
-            solarPower += efficiency * (1.0 + (temperature - 25.0) * t_coeff) * (100.0 - cloudCover) / 100.0 * ((sunsetEpoch - sunriseEpoch) / 86400)
+            datetime = int(weatherData['datetimeEpoch'])
+            solarPowerCalc = efficiency * (1.0 + (temperature - 5.0) * t_coeff) * (100.0 - cloudCover) / 100.0 * ((sunsetEpoch - sunriseEpoch) / 86400)
+            y_values[panelType].append(solarPowerCalc)
+            day = ((datetime - start_time) / 86400)
+            time_values[panelType].append(day)
+            solarPower += solarPowerCalc
         efficiencies[panelType] = solarPower
-    jobs.update_job_results(jid, json.dumps(efficiencies))
+
+    bestSolarPanel = max(efficiencies, key=efficiencies.get)
+    for panelType in y_values.keys():
+        plt.plot(time_values[panelType], y_values[panelType], label = panelType)
+
+    plt.ylabel('Relative Efficiency')
+    plt.xlabel('Days since 01-01-2023')
+    plt.title('Efficiency vs Day of the Year')
+    plt.legend()
+    plt.text(1.1, 0.11, f'{bestSolarPanel} was the Most Efficient Type', fontsize=10) 
+    plt.savefig('plot.png')
+    file_bytes = open('plot.png', 'rb').read()
+
+    jobs.update_job_results(jid, file_bytes)
     jobs.update_job_status(jid, 'complete')
     jobs.update_job_end(jid)
 
-def graph(jid: str, params: str):
+    plt.clf()    
+
+def graphWeather(jid: str, params: str):
     params = json.loads(params)
     city = params['city']
     cities = getCities()

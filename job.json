@@ -1,7 +1,4 @@
 {
-    "type":"graph",
-    "param": {
-	"city": "Austin",
-	"category": "temp"
-    }
+    "type":"graphEfficiency",
+    "param": "Austin"
 }

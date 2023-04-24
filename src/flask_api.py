@@ -130,27 +130,20 @@ def getCityWeatherData(city: str) -> List[dict]:
     if city not in cities:
         return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
     rd = get_redis_client(cities[city])
-    start = request.args.get('start', 0)
-    if start:
-        try:
-            start = int(start)
-        except ValueError:
-            return "Invalid start parameter; start must be an integer."
-    end = request.args.get('end', len(rd.keys()) - 1)
-    if end:
-        try:
-            end = int(start)
-                    except ValueError:
-                                    return "Invalid start parameter; start must be an integer."
-    
+    dates = list(rd.keys())
+    dates.sort()
+    start = request.args.get('start', dates[0])
+    end = request.args.get('end', dates[len(dates) - 1])
     if start not in rd.keys():
         return "Invalid start parameter; start must be a valid date in the format YYYY-MM-DD.", 400
+    if end not in rd.keys():
+        return "Invalid end parameter; end must be a valid date in the format YYYY-MM-DD.", 400
+    startIndex = dates.index(start)
+    endIndex = dates.index(end)
     weatherData = []
-    for date in rd.keys():
+    for date in dates:
         weatherData.append(rd.hgetall(date))
-    else:
-        startIndex = rd.keys().indexof(start)
-        return weatherData[startIndex:]
+    return weatherData[startIndex:endIndex]
 
 @app.route('/weather/cities/<city>/dates', methods=['GET'])
 def getDates(city: str) -> List[str]:
@@ -199,9 +192,9 @@ def getWeatherData(city: str, date: str) -> dict:
         return "Error: Date not found. Available dates can be found in /weather/cities/<city>/dates \n", 400
     return weatherData
 
+@app.route('/weather/cities/<city>/dates/<date>/categories', methods=['GET'])
 @app.route('/weather/categories', methods=['GET'])
-#@app.route('/weather/cities/<city>/dates/<date>/categories', methods=['GET'])
-def getCategories(city: str='Dallas', date: str='2023-01-01') -> dict:
+def getCategories() -> dict:
     """
     Gets the weather data, 
     then returns the categories for weather data of a given date/city, if available. 
@@ -222,12 +215,10 @@ def getCategories(city: str='Dallas', date: str='2023-01-01') -> dict:
     if not checkData():
         return "Error: Data not found. Please load the data.\n", 400
     cities = getCities()
-    if city not in cities:
-        return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
+    city = 'Dallas'
+    date = '2023-01-01'
     rd = get_redis_client(cities[city])
     weatherData = rd.hgetall(date)
-    if weatherData == {}:
-        return "Error: Data not found. Available dates can be found in /weather/cities/<city>/dates \n", 400
     return list(weatherData.keys())
 
 @app.route('/weather/cities/<city>/categories/<category>', methods=['GET'])
@@ -256,9 +247,23 @@ def getSpecificWeatherData(city: str, category: str) -> dict:
     if not checkCategories(category):
         return "Error: Category not found. Available categories can be found at /weather/categories.\n", 400
     rd = get_redis_client(cities[city])
+
+    dates = list(rd.keys())
+    dates.sort()
+    start = request.args.get('start', dates[0])
+    end = request.args.get('end', dates[len(dates) - 1])
+    if start not in rd.keys():
+        return "Invalid start parameter; start must be a valid date in the format YYYY-MM-DD.", 400
+    if end not in rd.keys():
+        return "Invalid end parameter; end must be a valid date in the format YYYY-MM-DD.", 400
+    startIndex = dates.index(start)
+    endIndex = dates.index(end)
+
     weatherData = {}
     dates = rd.keys()
-    for date in dates:
+    dates.sort()
+    for dateIndex in range(startIndex, endIndex + 1):
+        date = dates[dateIndex]
         weatherData[date] = rd.hget(date, category)
     return weatherData
 
@@ -266,7 +271,7 @@ def checkCategories(category: str):
     rd = get_redis_client(1)
     date = '2023-01-01'
     weatherData = rd.hgetall(date)
-    return category not in weatherData.keys()
+    return category in weatherData.keys()
 
 @app.route('/solar', methods=['GET'])
 def getSolarData():
