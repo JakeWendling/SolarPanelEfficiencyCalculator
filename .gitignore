@@ -2,3 +2,5 @@
 push
 __pycache__
 data/dump.rdb
+plot.png
+jobtest
