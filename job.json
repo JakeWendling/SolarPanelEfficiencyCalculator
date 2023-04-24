@@ -1,0 +1,7 @@
+{
+    "type":"graph",
+    "param": {
+	"city": "Austin",
+	"category": "temp"
+    }
+}

@@ -3,37 +3,37 @@
 	"Efficiency": 0.25,
 	"Size": "Smallest",
 	"Cost": "Highest",
-	"T_Coeff": -0.360
+	"T_Coeff": -0.00360
     },
     "Monocrystalline": {
 	"Efficiency": 0.2,
 	"Size": "Average",
 	"Cost": "High",
-	"T_Coeff": -0.370
+	"T_Coeff": -0.00370
     },
     "Polycrytalline": {
 	"Efficiency": 0.16,
 	"Size": "Average",
 	"Cost": "Medium",
-	"T_Coeff": -0.400
+	"T_Coeff": -0.00400
     },
     "CIGS": {
 	"Efficiency": 0.14,
 	"Size": "Average, thin-film",
 	"Cost": "Low",
-	"T_Coeff": -0.280
+	"T_Coeff": -0.00280
     },
     "CdTe": {
 	"Efficiency": 0.10,
 	"Size": "Average, thin-film",
 	"Cost": "Lower",
-	"T_Coeff": -0.330
+	"T_Coeff": -0.00330
     },
     "a-Si": {
 	"Efficiency": 0.07,
 	"Size": "Average, thin-film",
 	"Cost": "Lowest",
-	"T_Coeff": -0.200
+	"T_Coeff": -0.00200
     }
 }
 	

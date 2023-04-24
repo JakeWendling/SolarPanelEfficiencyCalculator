@@ -40,68 +40,6 @@ def getCities() -> dict:
     cities = {'Dallas': 1, 'Austin': 2, 'Houston': 3, 'San_Antonio': 4}
     return cities
     
-@app.route('/image', methods=['DELETE'])
-def deleteImage() -> dict:
-    """
-    Deletes the image stored in the redis db
-
-    Returns:
-        string: success message
-    """
-    rd = get_redis_client(1, False)
-    if rd.keys() == []:
-        return 'Error, no image exists in the database\n', 400
-    rd.delete('image')
-    return 'Image deleted from database\n'
-
-@app.route('/image', methods=['GET'])
-def getImage() -> bytes:
-    """
-    Gets the image stored in the redis db
-
-    Returns:
-        image: plot image as bytes
-    """
-    rd = get_redis_client(1, False)
-    if rd.keys() == []:
-        raise Exception('Error: no image exists in the database')
-    image = rd.get('image')
-    return image
-    #return send_file(image, mimetype='image/png', as_attachment=True, download_name='plot.png')
-
-@app.route('/image', methods=['POST'])
-def postImage() -> tuple:
-    """
-    Creates a plot of the locus groups of the gene data and stores the image in redis 
-
-    Returns:
-        string: success message
-    """
-    redis_genes = get_redis_client(0)
-    redis_image = get_redis_client(1, False)
-
-    if redis_genes.hkeys('data') == []:
-        return 'Error, data has not been loaded into the database\n', 400
-    
-    graph_data = {}
-    for gene in redis_genes.hkeys('data'):
-        gene_data = json.loads(redis_genes.hget('data', gene))
-        locus_group = gene_data['locus_group']
-        if locus_group in graph_data:
-            graph_data[locus_group] += 1
-        else:
-            graph_data[locus_group] = 1
-    
-    plt.bar(graph_data.keys(),graph_data.values())
-    plt.ylabel('Count')
-    plt.title('Counts of Locus Groups in HGNC Gene Data')
-    plt.xticks(rotation = 15)
-    plt.savefig('plot.png')
-    file_bytes = open('plot.png', 'rb').read()
-    redis_image.set('image', file_bytes)
-    
-    return 'Image saved to database\n'
-
 @app.route('/data', methods=['POST'])
 def postData() -> dict:
     """
@@ -187,14 +125,32 @@ def getCityWeatherData(city: str) -> List[dict]:
     """
     if not checkData():
         return "Error: Data not found. Please load the data.\n", 400
+
     cities = getCities()
     if city not in cities:
         return "Error: City not found. Available cities can be found in /weather/cities.\n", 400
     rd = get_redis_client(cities[city])
+    start = request.args.get('start', 0)
+    if start:
+        try:
+            start = int(start)
+        except ValueError:
+            return "Invalid start parameter; start must be an integer."
+    end = request.args.get('end', len(rd.keys()) - 1)
+    if end:
+        try:
+            end = int(start)
+                    except ValueError:
+                                    return "Invalid start parameter; start must be an integer."
+    
+    if start not in rd.keys():
+        return "Invalid start parameter; start must be a valid date in the format YYYY-MM-DD.", 400
     weatherData = []
     for date in rd.keys():
         weatherData.append(rd.hgetall(date))
-    return weatherData
+    else:
+        startIndex = rd.keys().indexof(start)
+        return weatherData[startIndex:]
 
 @app.route('/weather/cities/<city>/dates', methods=['GET'])
 def getDates(city: str) -> List[str]:
@@ -359,8 +315,10 @@ def postJobs():
     try:
         job = request.get_json(force=True)
     except Exception as e:
-        return True, json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
-    return json.dumps(jobs.add_job(job['type'], job['param'], job['start'], job['end']))
+        return json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
+    if isinstance(job['param'], dict):
+        return jobs.add_job(job['type'], json.dumps(job['param']))
+    return jobs.add_job(job['type'], job['param'])
 
 @app.route('/jobs', methods=['GET'])
 def getJobs():
@@ -369,7 +327,27 @@ def getJobs():
     """
     rd = get_redis_client(7)
     return list(rd.keys())
-    
+
+@app.route('/jobs/<id>', methods=['GET'])
+def getJob(id):
+    """
+    API route for getting a job given a job id.
+    """
+    rd = get_redis_client(7)
+    if id not in rd.keys():
+        return "Error: Job id not found. Available job ids can be found at /jobs.\n", 400
+    return dict(zip(['start','end','status','type','param'],rd.hmget(id,'start','end','status','type','param')))
+
+@app.route('/jobs/<id>/results', methods=['GET'])
+def getJobResults(id):
+    """
+    API route for getting job results given a job id.
+    """
+    rd = get_redis_client(7)
+    if id not in rd.keys():
+        return "Error: Job id not found. Available job ids can be found at /jobs.\n", 400
+    rd = get_redis_client(7, False)
+    return rd.hget(id, 'results')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
-    rd = get_redis_client()

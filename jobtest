@@ -1,0 +1,3 @@
+curl localhost:5000/jobs -X POST -d @job.json
+curl localhost:5000/jobs
+echo "curl localhost:5000/jobs/"
