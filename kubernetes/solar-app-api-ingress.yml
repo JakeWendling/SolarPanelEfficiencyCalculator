@@ -17,4 +17,4 @@ spec:
             service:
               name: solar-app-api-nodeport
               port:
-                  number: 31587
+                  number: 32765

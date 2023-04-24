@@ -363,7 +363,7 @@ def get_help():
         Return: 
             help_string - a string containing the help text for each route
     """
-    help_string = "Usage: GET /route\n\n"
+    help_string = "Usage: curl jakew57.coe332.tacc.cloud/route\n\n"
     help_string += "Available routes:\n\n"
     help_string += "   /image  - Returns an image of a plot image as bytes.\n\n"
     help_string += "   /data - Gets the weather data and returns the data in dictionary format.  \n\n"
@@ -378,11 +378,9 @@ def get_help():
     help_string += "   /solar  -  Gets the solar data from the data base.\n\n"
     help_string += "   /solar/categories  -   Gets the list od categories in the solar data base.\n\n"
     help_string += "   /solar/categories/<category>   - Gets the specific category of a given category in the solar data base.\n\n"
-    help_string += "Usage: POST /route\n\n"
-    help_string += "   /image  - Creates a plot of the data and stores the image in redis.\n\n"
+    help_string += "Usage: curl -X POST jakew57.coe332.tacc.cloud/route\n\n"
     help_string += "   /data  - Gets the weather/solar panel data and saves the data in dictionary format in the flask app. Returns a String.\n\n"
-    help_string += "Usage: DELETE /route\n\n"
-    help_string += "   /image  - Deletes the image stored in the redis db returns a successful string.\n\n"
+    help_string += "Usage: curl -X DELETE jakew57.coe332.tacc.cloud/route\n\n"
     help_string += "   /data  - Deletes the data stored in the redis db returns a success message.\n\n"
     return help_string
 
