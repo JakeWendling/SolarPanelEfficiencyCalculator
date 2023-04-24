@@ -349,5 +349,37 @@ def getJobResults(id):
     rd = get_redis_client(7, False)
     return rd.hget(id, 'results')
 
+@app.route('/help', methods=['GET'])
+def get_help():
+    """ 
+        get_help function that returns a help text for the user giving brief descriptions of all available routes (plus their methods) of the API
+        Args: 
+            No Args 
+        Return: 
+            help_string - a string containing the help text for each route
+    """
+    help_string = "Usage: GET /route\n\n"
+    help_string += "Available routes:\n\n"
+    help_string += "   /image  - Returns an image of a plot image as bytes.\n\n"
+    help_string += "   /data - Gets the weather data and returns the data in dictionary format.  \n\n"
+    help_string += "   /cities  - Gets the weather data and returns the list of cities.\n\n"
+    help_string += "   /weather/cities  -  Returns a dateList a list of cities (strings) for which weather data is available.\n\n"
+    help_string += "   /weather/cities/<city>   -   Gets the weather data and returns the data for a given city.\n\n"
+    help_string += "   /weather/cities/<city>/dates   -   Gets the weather data and returns the list of dates in a list.\n\n"
+    help_string += "   /weather/cities/<city>/dates/<date>  - Gets the weather data, then returns the weather data for a given date/city, if available. Otherwise returns an error message and error code..\n\n"
+    help_string += "   /help  - Returns an string giving helpful information.\n\n"
+    help_string += "   /weather/categories  - Gets the weather data, then returns the categories for weather data of a given date/city, if available.\n\n"
+    help_string += "   /weather/cities/<city>/categories/<category> - Gets the weather data, then returns the weather data of a given category for a given city, if available.\n\n"
+    help_string += "   /solar  -  Gets the solar data from the data base.\n\n"
+    help_string += "   /solar/categories  -   Gets the list od categories in the solar data base.\n\n"
+    help_string += "   /solar/categories/<category>   - Gets the specific category of a given category in the solar data base.\n\n"
+    help_string += "Usage: POST /route\n\n"
+    help_string += "   /image  - Creates a plot of the data and stores the image in redis.\n\n"
+    help_string += "   /data  - Gets the weather/solar panel data and saves the data in dictionary format in the flask app. Returns a String.\n\n"
+    help_string += "Usage: DELETE /route\n\n"
+    help_string += "   /image  - Deletes the image stored in the redis db returns a successful string.\n\n"
+    help_string += "   /data  - Deletes the data stored in the redis db returns a success message.\n\n"
+    return help_string
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
