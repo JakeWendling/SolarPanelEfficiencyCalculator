@@ -138,7 +138,7 @@ To Get the weather data see the list of dates in a list
 your output may look as:
 
 ```
-!!DISPLAY /weather/cities/&lt;city&gt;/dates !!
+!!DISPLAY /weather/cities/&lt;city&gt;/dates !
 ```
 
 
