@@ -160,8 +160,33 @@ Your output should look like:
   "datetimeEpoch": "1681362000",.....
 ```
 
-##categories go here
+## /weather/categories
+This route returns the categories available for weather data
+```
+  curl jakew57.coe332.tacc.cloud/weather/categories
+```
+Your output should look like:
+```
+	
 
+	DIPLAY HERE
+	
+```
+
+	
+## /weather/cities/&lt;city&gt;/categories/&lt;category&gt;
+it returns the weather data of a given category and city 	
+```
+  curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/categories/&lt;category&gt;
+```
+Your output should look like:
+```
+	DIPLAY HERE
+
+```
+	
+	
+	
 You can also add a start and end date to limit the data using the following command:
 ```
 curl "jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;"
