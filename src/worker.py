@@ -7,11 +7,17 @@ import json
 q = jobs.get_hotqueue()
 
 def getCities() -> dict:
+    """
+    returns the list of cities in the weather data
+    """
     cities = {'Dallas': 1, 'Austin': 2, 'Houston': 3, 'San_Antonio': 4}
     return cities
 
 @q.worker
-def execute_job(jid):
+def execute_job(jid: str):
+    """
+    Runs each time a job is added to the hotqueue. Checks the type of the job and runs the corresponding function.
+    """
     jobs.update_job_status(jid, 'in progress')
     jobType = jobs.get_job_type(jid)
     jobParam = jobs.get_job_param(jid)
@@ -23,6 +29,9 @@ def execute_job(jid):
         jobs.update_job_status(jid, 'Error: job type does not exist')
        
 def graphEfficiency(jid: str, city: str):
+    """
+    Graphs the solar panel efficiency vs time for the given city and uploads the image to redis.
+    """
     efficiencies = {}
     rd_solar = jobs.get_redis_client(0)
     if rd_solar.keys == []:
@@ -74,6 +83,9 @@ def graphEfficiency(jid: str, city: str):
     plt.clf()    
 
 def graphWeather(jid: str, params: str):
+    """
+    Graphs the weather data vs time for the given category of data and for the given city
+    """
     params = json.loads(params)
     city = params['city']
     cities = getCities()

@@ -8,6 +8,9 @@ import os
 redis_ip = os.environ.get('REDIS_IP')
 
 def get_hotqueue():
+    """
+    Returns the hotqueue object
+    """
     q = HotQueue("queue", host=redis_ip, port=6379, db=8)
     return q
 
@@ -32,11 +35,14 @@ def get_redis_client(db: int=0, decode: bool=True):
     return rd
 
 def _get_job_by_id(jid: str) -> dict:
+    """
+    Returns the job of the given id
+    """
     rd = get_redis_client(7, False)
     job = rd.hgetall(_generate_job_key(jid))
     return job
     
-def _generate_jid():
+def _generate_jid() -> str:
     """      
     Generate a pseudo-random identifier for a job.
     """
@@ -78,7 +84,7 @@ def _queue_job(jid: str):
     """Add a job to the redis queue."""
     q.put(jid)
 
-def add_job(jtype: str, param: str, status:str="submitted"):
+def add_job(jtype: str, param: str, status:str="submitted") -> dict:
     """Add a job to the redis queue."""
     jid = _generate_jid()
     job_dict = _instantiate_job(jid, jtype, param, status)
@@ -88,7 +94,7 @@ def add_job(jtype: str, param: str, status:str="submitted"):
     _queue_job(jid)
     return job_dict
     
-def update_job_status(jid, status):
+def update_job_status(jid: str, status: str):
     """Update the status of job with job id `jid` to status `status`."""
     job = _get_job_by_id(jid)
     if job:

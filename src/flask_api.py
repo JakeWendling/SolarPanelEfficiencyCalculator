@@ -328,7 +328,7 @@ def getSolarCategoryData(category: str) -> List[str]:
         solarCategories[panelType] = rd.hget(panelType, category)
     return solarCategories
 
-def checkSolarCategories(category: str):
+def checkSolarCategories(category: str) -> bool:
     """
     Checks if the category exists in the solar data
 
@@ -364,7 +364,7 @@ def getJobs():
     return list(rd.keys())
 
 @app.route('/jobs/<id>', methods=['GET'])
-def getJob(id):
+def getJob(id: str):
     """
     API route for getting a job given a job id.
     """
@@ -374,7 +374,7 @@ def getJob(id):
     return dict(zip(['start','end','status','type','param'],rd.hmget(id,'start','end','status','type','param')))
 
 @app.route('/jobs/<id>/results', methods=['GET'])
-def getJobResults(id):
+def getJobResults(id: str):
     """
     API route for getting job results given a job id.
     """
