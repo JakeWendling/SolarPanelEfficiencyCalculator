@@ -59,7 +59,7 @@ All of the Kubernetes services are initiated. You then will see an output confir
 | /jobs | GET | Returns a list of submitted jobs |
 | /jobs/&lt;id&gt; | GET | Returns info about the given job |
 | /jobs/&lt;id&gt;/results -o <filename> | GET | Returns the results of the given job in %lt;filename&gt; |
-| /jobs -d @<filename> | POST | Uploads a job from <filename> to the application |
+| /jobs -d \@<filename> | POST | Uploads a job from <filename> to the application |
 
 ## Commands 
 
@@ -105,11 +105,7 @@ To access a list of cities (strings) for which weather data is available:
 ```
   curl jakew57.coe332.tacc.cloud/weather/cities
 ```
-The resultant output should look as:
-```
-  !!! DISPLAY /weather/cities!!! 
-
-```
+The resultant output should look the same as the above /cities:
 
 ## /weather/cities/&lt;city&gt;
 If you are only interested in finding the data fromm a specific city you can curl:
@@ -118,9 +114,18 @@ If you are only interested in finding the data fromm a specific city you can cur
 ```
 This should give you something like:
 ```
-  !!! DISPLAY weather/cities/&lt;city&gt; !!!
+[
+  {
+    "cloudcover": "45.7",
+    "conditions": "Partially cloudy",
+    "datetime": "2023-01-01",.....
   
 ```
+You can also add a start and end date to limit the data using the following command:
+```
+curl "jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;"
+```
+Make sure to enter this command surrounded by quotes, or the shell will interpret the command incorrectly.
 
 ## /weather/cities/&lt;city&gt;/dates
 To Get the weather data see the list of dates in a list
@@ -129,10 +134,15 @@ To Get the weather data see the list of dates in a list
  curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates
 
 ```
-your output may look as:
+Your output should look like:
 
 ```
-!!DISPLAY /weather/cities/&lt;city&gt;/dates !
+[
+  "2023-01-01",
+  "2023-01-02",
+  "2023-01-03",
+  "2023-01-04",
+  "2023-01-05",.....
 ```
 
 
@@ -141,12 +151,23 @@ This route gets the data from a specific date from the list provided:
 ```
   curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates/&lt;date&gt;
 ```
-Your output mayl ook as:
+Your output should look like:
 ```
-!!!DISPLAY /weather/cities/&lt;city&gt;/dates/&lt;date&gt; !!
-
-
+{
+  "cloudcover": "22.2",
+  "conditions": "Partially cloudy",
+  "datetime": "2023-04-13",
+  "datetimeEpoch": "1681362000",.....
 ```
+
+##categories go here
+
+You can also add a start and end date to limit the data using the following command:
+```
+curl "jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;"
+```
+Make sure to enter this command surrounded by quotes, or the shell will interpret the command incorrectly.
+
 
 ## /jobs
 To create a plot of the of the data, first modify job.json to your liking, then post it to the application:
@@ -170,7 +191,7 @@ To get a graph of the solar panel efficiency for your city, use this format. Rep
 ```
 Then post the job.json:
 ```
-  curl -X POST jakew57.coe332.tacc.cloud/jobs -d @job.json
+  curl -X POST jakew57.coe332.tacc.cloud/jobs -d \@job.json
 ```
 This will return something like the following:
 ```
