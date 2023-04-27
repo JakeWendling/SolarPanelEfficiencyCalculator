@@ -59,24 +59,24 @@ All of the Kubernetes services are initiated. You then will see an output confir
 | /jobs | GET | Returns a list of submitted jobs |
 | /jobs/&lt;id&gt; | GET | Returns info about the given job |
 | /jobs/&lt;id&gt;/results -o <filename> | GET | Returns the results of the given job in %lt;filename&gt; |
-| /jobs -d \@<filename> | POST | Uploads a job from <filename> to the application |
+| /jobs -d @&lt;filename&gt; | POST | Uploads a job from &lt;filename&gt; to the application |
 
 ## Commands 
 
 ## /data
 To load the data into the app, run the following:
 ```
-  curl -X POST jakew57.coe332.tacc.cloud/data
+curl -X POST jakew57.coe332.tacc.cloud/data
 ```
 
 To delete the data from the app, run the following:
 ```
-  curl -X DELETE jakew57.coe332.tacc.cloud/data
+curl -X DELETE jakew57.coe332.tacc.cloud/data
 ```
 
 To request the entire dataset:
 ```
- curl jakew57.coe332.tacc.cloud/data
+curl jakew57.coe332.tacc.cloud/data
 ```
 This method will display something as follows: 
 ```
@@ -90,7 +90,7 @@ This method will display something as follows:
 ## /cities
 To get the list of cities:
 ```
-  curl jakew57.coe332.tacc.cloud/cities 
+curl jakew57.coe332.tacc.cloud/cities 
 ```
 By curling into the cities route you should get:
 ```
@@ -103,14 +103,14 @@ San_Antonio
 ## /weather/cities
 To access a list of cities (strings) for which weather data is available:
 ```
-  curl jakew57.coe332.tacc.cloud/weather/cities
+curl jakew57.coe332.tacc.cloud/weather/cities
 ```
-The resultant output should look the same as the above /cities:
+The resulting output should look the same as the above /cities:
 
 ## /weather/cities/&lt;city&gt;
 If you are only interested in finding the data fromm a specific city you can curl:
 ```
-  curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;
+curl jakew57.coe332.tacc.cloud/weather/cities/<city>
 ```
 This should give you something like:
 ```
@@ -123,7 +123,7 @@ This should give you something like:
 ```
 You can also add a start and end date to limit the data using the following command:
 ```
-curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;
+curl jakew57.coe332.tacc.cloud/weather/cities/<city>?start=<start_date>&end=<end_date>
 ```
 Make sure to enter this command surrounded by quotes, or the shell will interpret the command incorrectly.
 
@@ -131,8 +131,7 @@ Make sure to enter this command surrounded by quotes, or the shell will interpre
 To Get the weather data see the list of dates in a list
     
 ```
- curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates
-
+curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates
 ```
 Your output should look like:
 
