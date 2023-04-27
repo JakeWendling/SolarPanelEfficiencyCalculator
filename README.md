@@ -93,7 +93,7 @@ To get the list of cities:
 curl jakew57.coe332.tacc.cloud/cities 
 ```
 By curling into the cities route you should get:
-```json
+```
 Dallas,
 Austin,
 Houston,
@@ -147,7 +147,7 @@ Your output should look like:
 ## /weather/cities/&lt;city&gt;/dates/&lt;date&gt;
 This route gets the data from a specific date from the list provided:
 ```
-  curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates/&lt;date&gt;
+  curl jakew57.coe332.tacc.cloud/weather/cities/<city>/dates/<date>
 ```
 Your output should look like:
 ```json
@@ -214,7 +214,7 @@ To get a graph of the solar panel efficiency for your city, use this format. Rep
 ```
 Then post the job.json:
 ```
-  curl -X POST jakew57.coe332.tacc.cloud/jobs -d \@job.json
+  curl -X POST jakew57.coe332.tacc.cloud/jobs -d @job.json
 ```
 This will return something like the following:
 ```json
