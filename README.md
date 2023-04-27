@@ -58,7 +58,7 @@ All of the Kubernetes services are initiated. You then will see an output confir
 | /solar/categories/&lt;category&gt;| GET | Gets the specific category of a given category in the solar data base|
 | /jobs | GET | Returns a list of submitted jobs |
 | /jobs/&lt;id&gt; | GET | Returns info about the given job |
-| /jobs/&lt;id&gt;/results -o <filename> | GET | Returns the results of the given job in %lt;filename&gt; |
+| /jobs/&lt;id&gt;/results -o &lt;filename&gt; | GET | Returns the results of the given job in &lt;filename&gt; |
 | /jobs -d @&lt;filename&gt; | POST | Uploads a job from &lt;filename&gt; to the application |
 
 ## Commands 
@@ -79,7 +79,7 @@ To request the entire dataset:
 curl jakew57.coe332.tacc.cloud/data
 ```
 This method will display something as follows: 
-```
+```json
 {
   "latitude" : 30.2676,
   "longitude" : -97.743,			
@@ -93,7 +93,7 @@ To get the list of cities:
 curl jakew57.coe332.tacc.cloud/cities 
 ```
 By curling into the cities route you should get:
-```
+```json
 Dallas,
 Austin,
 Houston,
@@ -113,7 +113,7 @@ If you are only interested in finding the data fromm a specific city you can cur
 curl jakew57.coe332.tacc.cloud/weather/cities/<city>
 ```
 This should give you something like:
-```
+```json
 [
   {
     "cloudcover": "45.7",
@@ -131,11 +131,10 @@ Make sure to enter this command surrounded by quotes, or the shell will interpre
 To Get the weather data see the list of dates in a list
     
 ```
-curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates
+curl jakew57.coe332.tacc.cloud/weather/cities/<city>/dates
 ```
 Your output should look like:
-
-```
+```json
 [
   "2023-01-01",
   "2023-01-02",
@@ -151,7 +150,7 @@ This route gets the data from a specific date from the list provided:
   curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/dates/&lt;date&gt;
 ```
 Your output should look like:
-```
+```json
 {
   "cloudcover": "22.2",
   "conditions": "Partially cloudy",
@@ -165,30 +164,30 @@ This route returns the categories available for weather data
   curl jakew57.coe332.tacc.cloud/weather/categories
 ```
 Your output should look like:
-```
-	
-
-	DIPLAY HERE
-	
+```json
+[
+  "datetime",
+  "datetimeEpoch",
+  "tempmax",......
 ```
 
 	
 ## /weather/cities/&lt;city&gt;/categories/&lt;category&gt;
 it returns the weather data of a given category and city 	
 ```
-  curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;/categories/&lt;category&gt;
+  curl jakew57.coe332.tacc.cloud/weather/cities/<city>/categories/<category>
 ```
 Your output should look like:
-```
-	DIPLAY HERE
-
-```
-	
-	
-	
+```json
+{
+   "2023-01-01": "0.0",
+   "2023-01-02": "0.169",
+   "2023-01-03": "0.0",
+   "2023-01-04": "0.0",.....
+```	
 You can also add a start and end date to limit the data using the following command:
 ```
-curl "jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;"
+curl jakew57.coe332.tacc.cloud/weather/cities/<city>/categories/<category>?start=<start_date>&end=<end_date>
 ```
 Make sure to enter this command surrounded by quotes, or the shell will interpret the command incorrectly.
 
@@ -218,7 +217,7 @@ Then post the job.json:
   curl -X POST jakew57.coe332.tacc.cloud/jobs -d \@job.json
 ```
 This will return something like the following:
-```
+```json
 {
   "id": "38b2a9c1-375b-4d43-8edf-9c64344c3c72",
   "param": "Dallas",
@@ -240,7 +239,7 @@ To access the solar route:
   curl jakew57.coe332.tacc.cloud/solar
 ```
 expected output should look like:
-```
+```json
 {
   "CIGS": {
   "Cost": "Low",
@@ -256,7 +255,7 @@ To access the list of categories in the
   curl jakew57.coe332.tacc.cloud/solar/categories
 ```
 expected output should look like:
-```
+```json
 [
   "Efficiency",
   "Size",
@@ -269,7 +268,7 @@ expected output should look like:
   curl jakew57.coe332.tacc.cloud/solar/categories/&lt;category&gt;
 ```
 expected output should look like for the Efficiency category:
-```
+```json
 {
   "CIGS": "0.14",
   "CdTe": "0.1",
