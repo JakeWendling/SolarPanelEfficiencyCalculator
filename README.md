@@ -123,7 +123,7 @@ This should give you something like:
 ```
 You can also add a start and end date to limit the data using the following command:
 ```
-curl "jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;"
+curl jakew57.coe332.tacc.cloud/weather/cities/&lt;city&gt;?start=&lt;start_date&gt;&end=&lt;end_date&gt;
 ```
 Make sure to enter this command surrounded by quotes, or the shell will interpret the command incorrectly.
 
