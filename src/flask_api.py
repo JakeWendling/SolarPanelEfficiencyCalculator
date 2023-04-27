@@ -37,6 +37,9 @@ def get_redis_client(db: int=0, decode: bool=True):
     return rd
 
 def getCities() -> dict:
+    """
+    Returns the list of cities contained in the weather data
+    """
     cities = {'Dallas': 1, 'Austin': 2, 'Houston': 3, 'San_Antonio': 4}
     return cities
     
@@ -197,12 +200,10 @@ def getWeatherData(city: str, date: str) -> dict:
 def getCategories() -> dict:
     """
     Gets the weather data, 
-    then returns the categories for weather data of a given date/city, if available. 
+    then returns the categories for weather data, if available. 
     Otherwise returns an error message and error code.
     
     Args:
-        date: A string representing a date.
-        city: string representing a city.
         category: string representing category of data to return.
         
     Returns:
@@ -268,6 +269,13 @@ def getSpecificWeatherData(city: str, category: str) -> dict:
     return weatherData
 
 def checkCategories(category: str):
+    """
+    Checks if the given category exists in the data
+
+    Returns:
+        True: if the category exists
+        False: if the category was not found
+    """
     rd = get_redis_client(1)
     date = '2023-01-01'
     weatherData = rd.hgetall(date)
@@ -275,6 +283,9 @@ def checkCategories(category: str):
 
 @app.route('/solar', methods=['GET'])
 def getSolarData():
+    """
+    Returns the solar data in dictionary format
+    """
     rd = get_redis_client(0)
     solarData = {}
     if not checkData():
@@ -285,6 +296,9 @@ def getSolarData():
 
 @app.route('/solar/categories', methods=['GET'])
 def getSolarCategories():
+    """
+    Returns the available categories in the solar data
+    """
     rd = get_redis_client(0)
     solarCategories = []
     if not checkData():
@@ -295,6 +309,15 @@ def getSolarCategories():
 
 @app.route('/solar/categories/<category>', methods=['GET'])
 def getSolarCategoryData(category: str) -> List[str]:
+    """
+    Returns the data for the given category in the solar data
+
+    Args:
+        category: string that contains the category name
+
+    Returns:
+        solarCategories: dictionary containing the solar data of the given category
+    """
     rd = get_redis_client(0)
     solarCategories = {}
     if not checkData():
@@ -306,6 +329,13 @@ def getSolarCategoryData(category: str) -> List[str]:
     return solarCategories
 
 def checkSolarCategories(category: str):
+    """
+    Checks if the category exists in the solar data
+
+    Returns:
+        True: if the category exists
+        False: otherwise
+    """
     rd = get_redis_client(0)
     panelType = list(rd.keys())[0]
     solarCategories = rd.hgetall(panelType).keys()
